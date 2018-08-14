@@ -18,7 +18,7 @@ namespace SklepInternetowy.DAL
         public DbSet<Kurs> Kursy { get; set; }
         public DbSet<Kategoria> Kategorie { get; set; }
         public DbSet<Zamowienie> Zamowienia { get; set; }
-        public DbSet<PozycjeZamowienia> PozycjaZamowienia { get; set; }
+        public DbSet<PozycjaZamowienia> PozycjeZamowienia { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
