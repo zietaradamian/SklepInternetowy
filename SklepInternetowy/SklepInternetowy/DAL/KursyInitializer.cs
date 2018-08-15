@@ -5,17 +5,15 @@ using System.Web;
 using System.Data.Entity;
 using SklepInternetowy.Models;
 using System.Data.Entity.Migrations;
+using SklepInternetowy.Migrations;
 
 namespace SklepInternetowy.DAL
 {
-    public class KursyInitializer : DropCreateDatabaseAlways<KursyContext>
+    public class KursyInitializer : MigrateDatabaseToLatestVersion<KursyContext, Configuration>
     {
-        protected override void Seed(KursyContext context)
-        {
-            SeedKursyData(context);
-            base.Seed(context);
-        }
-        private void SeedKursyData(KursyContext context)
+    
+
+        public static void SeedKursyData(KursyContext context)
         {
             var kategorie= new List<Kategoria>
             {
@@ -27,7 +25,7 @@ namespace SklepInternetowy.DAL
                 new Kategoria() { KategoriaId=6, NazwaKategorii="Xml", NazwaPlikuIkony="xml.png", OpisKategorii="uniwersalny język znaczników przeznaczony do reprezentowania różnych danych w strukturalizowany sposób" },
                 new Kategoria() { KategoriaId=7, NazwaKategorii="C#", NazwaPlikuIkony="csharp.png", OpisKategorii="obiektowy język programowania zaprojektowany dla platformy .Net" }
             };
-            kategorie.ForEach(k => context.Kategorie.Add(k));
+            kategorie.ForEach(k => context.Kategorie.AddOrUpdate(k));
             context.SaveChanges();
 
             var kursy = new List<Kurs>
@@ -54,7 +52,7 @@ namespace SklepInternetowy.DAL
                 DataDodania = DateTime.Now, OpisKursu="Kurs C# - obiektowy język programowania zaprojektowany dla platformy .Net"}
 
             };
-            kursy.ForEach(k => context.Kursy.Add(k));
+            kursy.ForEach(k => context.Kursy.AddOrUpdate(k));
             context.SaveChanges();
 
         }
