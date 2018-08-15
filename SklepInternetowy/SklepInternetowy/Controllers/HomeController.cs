@@ -14,15 +14,7 @@ namespace SklepInternetowy.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            Kategoria kategoria = new Kategoria
-            {
-                NazwaKategorii = "asp.net mvc",
-                NazwaPlikuIkony = "aspNetMvc.png",
-                OpisKategorii = "Opis"
-               
-            };
-            db.Kategorie.Add(kategoria);
-            db.SaveChanges();
+            var listaKategorii = db.Kategorie.ToList();
             return View();
         }
     }
