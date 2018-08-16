@@ -1,0 +1,16 @@
+﻿@model IEnumerable<SklepInternetowy.Models.Kategoria>
+@using SklepInternetowy.Infrastructure
+
+<nav class="KategorieVertical">
+    <ul>
+        @foreach (var kategoria in Model)
+        {
+            <li>
+                <a href="@Url.Action("Lista", "Kursy", new { nazwaKategori = kategoria.NazwaKategorii })"
+                   style="background-image: url(@Url.IkonyKategoriiSciezka(kategoria.NazwaPlikuIkony); ">
+                    @kategoria.NazwaKategorii
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
