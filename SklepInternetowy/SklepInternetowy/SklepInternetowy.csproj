@@ -197,12 +197,16 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\KoszykController.cs" />
+    <Compile Include="Controllers\KursyController.cs" />
     <Compile Include="DAL\KursyContext.cs" />
     <Compile Include="DAL\KursyInitializer.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\AppConfig.cs" />
+    <Compile Include="Infrastructure\UrlHelpers.cs" />
     <Compile Include="Migrations\201808151328159_InitialCreate.cs" />
     <Compile Include="Migrations\201808151328159_InitialCreate.Designer.cs">
       <DependentUpon>201808151328159_InitialCreate.cs</DependentUpon>
@@ -225,6 +229,7 @@
     <Compile Include="Models\PozycjaZamowienia.cs" />
     <Compile Include="Models\Zamowienie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\HomeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -242,6 +247,8 @@
     <Content Include="Views\Home\Pomoc.cshtml" />
     <Content Include="Views\Home\Regulamin.cshtml" />
     <Content Include="Views\Home\Kontakt.cshtml" />
+    <Content Include="Views\Kursy\Lista.cshtml" />
+    <Content Include="Views\Koszyk\DodajDoKoszyka.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
