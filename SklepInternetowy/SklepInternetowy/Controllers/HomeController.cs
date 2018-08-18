@@ -1,4 +1,5 @@
 ﻿using SklepInternetowy.DAL;
+using SklepInternetowy.Infrastructure;
 using SklepInternetowy.Models;
 using SklepInternetowy.ViewModels;
 using System;
@@ -15,15 +16,49 @@ namespace SklepInternetowy.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            var kategorie = db.Kategorie.ToList();
-            var nowosci = db.Kursy.Where(a => !a.Ukryty).OrderByDescending(a => a.DataDodania).Take(3).ToList();
-            var bestsellery = db.Kursy.Where(a => !a.Ukryty && a.Bestseller).OrderBy(a => Guid.NewGuid()).Take(3).ToList();
+            
+            
+            ICacheProvider cache = new DefaultCacheProvider();
+
+            List<Kategoria> kategorie;
+            if (cache.IsSet(Consts.KategorieCacheKey))
+            {
+                kategorie = cache.Get(Consts.KategorieCacheKey) as List<Kategoria>;
+            }
+            else
+            {
+                kategorie = db.Kategorie.ToList();
+                cache.Set(Consts.KategorieCacheKey, kategorie, 60);
+            }
+            List<Kurs> nowosci;
+            if (cache.IsSet(Consts.NowosciCacheKey))
+            {
+                nowosci = cache.Get(Consts.NowosciCacheKey) as List<Kurs>;
+            }
+            else
+            {
+                nowosci = db.Kursy.Where(a => !a.Ukryty).OrderByDescending(a => a.DataDodania).Take(3).ToList();
+                cache.Set(Consts.NowosciCacheKey, nowosci, 1);
+            }
+
+
+            List<Kurs> bestseller;
+            if (cache.IsSet(Consts.BestsellerCacheKey))
+            {
+                bestseller = cache.Get(Consts.BestsellerCacheKey) as List<Kurs>;
+            }
+            else
+            {
+                bestseller = db.Kursy.Where(a => !a.Ukryty).OrderByDescending(a => a.DataDodania).Take(3).ToList();
+                cache.Set(Consts.BestsellerCacheKey, bestseller, 1);
+            }
+            
 
             var vm = new HomeViewModel()
             {
                 Kategorie = kategorie,
                 Nowosci = nowosci,
-                Bestsellery = bestsellery
+                Bestsellery = bestseller
             };
 
 
