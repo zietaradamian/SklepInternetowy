@@ -11,7 +11,7 @@
         <div id="Breadcrumb">
             <img src="../Content/Images/dommaly.png" />
             <a href="link">
-                @Html.MvcSiteMap().SiteMapPath()
+               @Html.MvcSiteMap().SiteMapPath()
             </a>
 
             <form id="search-form" method="get" data-ajax="true" data-ajax-target="#SekcjaListaKategori">
@@ -21,9 +21,9 @@
                 <input type="submit" value="" />
             </form>
         </div>
-
-        @Html.Partial("_KursyList")
-
+     
+            @Html.Partial("_KursyList")
+       
 
     </div>
 </div>
@@ -75,8 +75,6 @@
             $("#search-form").submit(ajaxSubmit);
         });
     </script>
-}
-
 }
 
 
