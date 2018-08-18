@@ -21,9 +21,11 @@ namespace SklepInternetowy.Controllers
             var kursy = kategoria.Kursy.ToList();
             return View(kursy);
         }
-        public ActionResult Szczegoly(string id)
+        public ActionResult Szczegoly(int id)
         {
-            return View();
+            var kurs = db.Kursy.Find(id);
+
+            return View(kurs);
         }
         [ChildActionOnly]
         public ActionResult KategorieMenu()
