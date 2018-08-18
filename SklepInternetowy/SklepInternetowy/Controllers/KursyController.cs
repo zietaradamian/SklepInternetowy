@@ -15,10 +15,20 @@ namespace SklepInternetowy.Controllers
         {
             return View();
         }
-        public ActionResult Lista(string nazwaKategori)
+        public ActionResult Lista(string nazwaKategori, string searchQuery = null)
         {
             var kategoria = db.Kategorie.Include("Kursy").Where(k => k.NazwaKategorii.ToUpper() == nazwaKategori.ToUpper()).Single();
-            var kursy = kategoria.Kursy.ToList();
+
+            var kursy = kategoria.Kursy.Where(a => (searchQuery == null ||
+                                              a.TytulKursu.ToLower().Contains(searchQuery.ToLower()) ||
+                                              a.AutorKursu.ToLower().Contains(searchQuery.ToLower())) &&
+                                              !a.Ukryty);
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("_KursyList", kursy);
+            }
+
             return View(kursy);
         }
         public ActionResult Szczegoly(int id)
@@ -33,7 +43,14 @@ namespace SklepInternetowy.Controllers
         {
             var kategorie = db.Kategorie.ToList();
 
-            return PartialView("_KategorieMenu",kategorie);
+            return PartialView("_KategorieMenu", kategorie);
+        }
+        public ActionResult KursyPodpowiedzi(string term)
+        {
+            var kursy = db.Kursy.Where(a => !a.Ukryty && a.TytulKursu.ToLower().Contains(term.ToLower()))
+                        .Take(5).Select(a => new { label = a.TytulKursu });
+
+            return Json(kursy, JsonRequestBehavior.AllowGet);
         }
 
     }
