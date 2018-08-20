@@ -17,6 +17,7 @@ namespace SklepInternetowy.Migrations
         protected override void Seed(SklepInternetowy.DAL.KursyContext context)
         {
             KursyInitializer.SeedKursyData(context);
+            KursyInitializer.SeedUzytkownicy(context);
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

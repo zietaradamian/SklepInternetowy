@@ -2,10 +2,12 @@
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SklepInternetowy.App_Start;
+using SklepInternetowy.DAL;
 using SklepInternetowy.Models;
 using SklepInternetowy.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -21,7 +23,7 @@ namespace SklepInternetowy.Controllers
             ChangePasswordSuccess,
             Error
         }
-       
+        private KursyContext db = new KursyContext();
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
         {
@@ -134,6 +136,39 @@ namespace SklepInternetowy.Controllers
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie, DefaultAuthenticationTypes.TwoFactorCookie);
             AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = isPersistent }, await user.GenerateUserIdentityAsync(UserManager));
+        }
+        public ActionResult ListaZamowien()
+        {
+            bool isAdmin = User.IsInRole("Admin");
+            ViewBag.UserIsAdmin = isAdmin;
+
+            IEnumerable<Zamowienie> zamowieniaUzytkownika;
+            if(isAdmin)
+            {
+                zamowieniaUzytkownika = db.Zamowienia.Include("PozycjeZamowienia").OrderByDescending(o => o.DataDodania).ToArray();
+
+            }
+            else
+            {
+                var userId = User.Identity.GetUserId();
+                zamowieniaUzytkownika = db.Zamowienia.Where(o => o.UserId == userId).Include("PozycjeZamowienia").OrderByDescending(o => o.DataDodania).ToArray();
+            }
+            return View(zamowieniaUzytkownika);
+        }
+        [HttpPost]
+        [Authorize(Roles ="Admin")]
+        public StanZamowienia ZmianaStanuZamowienia(Zamowienie zamowienie)
+        {
+            Zamowienie zamowienieDoModyfikacji = db.Zamowienia.Find(zamowienie.ZamowienieId);
+            zamowienieDoModyfikacji.StanZamowienia = zamowienie.StanZamowienia;
+            db.SaveChanges();
+
+            //if (zamowienieDoModyfikacji.StanZamowienia == StanZamowienia.Zrealizowane)
+            //{
+            //    this.mailService.WyslanieZamowienieZrealizowaneEmail(zamowienieDoModyfikacji);
+            //}
+
+            return zamowienie.StanZamowienia;
         }
     }
 }
