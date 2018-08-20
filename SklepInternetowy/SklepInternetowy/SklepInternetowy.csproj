@@ -273,6 +273,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\KoszykController.cs" />
     <Compile Include="Controllers\KursyController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="DAL\KursyContext.cs" />
     <Compile Include="DAL\KursyInitializer.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
@@ -327,6 +328,7 @@
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\KoszykUsuwanieViewModel.cs" />
     <Compile Include="ViewModels\KoszykViewModel.cs" />
+    <Compile Include="ViewModels\ManageViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -365,6 +367,8 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Koszyk\Zaplac.cshtml" />
     <Content Include="Views\Koszyk\PotwierdzenieZamowienia.cshtml" />
+    <Content Include="Views\Manage\Index.cshtml" />
+    <Content Include="Views\Shared\_ManageLayout.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
