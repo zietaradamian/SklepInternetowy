@@ -1,9 +1,14 @@
-﻿using SklepInternetowy.DAL;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using SklepInternetowy.App_Start;
+using SklepInternetowy.DAL;
 using SklepInternetowy.Infrastructure;
+using SklepInternetowy.Models;
 using SklepInternetowy.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -59,6 +64,73 @@ namespace SklepInternetowy.Controllers
                 KoszykIloscPozycji = iloscPozycjiKoszyka
             };
             return Json(wynik);
+        }
+        public async Task<ActionResult> Zaplac()
+        {
+            if(Request.IsAuthenticated)
+            {
+                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+
+                var zamowienie = new Zamowienie
+                {
+                    Imie = user.DaneUzytkownika.Imie,
+                    Nazwisko = user.DaneUzytkownika.Nazwisko,
+                    Adres = user.DaneUzytkownika.Adres,
+                    Miasto = user.DaneUzytkownika.Miasto,
+                    KodPocztowy = user.DaneUzytkownika.KodPocztowy,
+                    Email = user.DaneUzytkownika.Email,
+                    Telefon = user.DaneUzytkownika.Telefon
+                };
+                return View(zamowienie);
+
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Zaplac", "Koszyk") });
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Zaplac(Zamowienie zamowienieSzczegoly)
+        {
+            if (ModelState.IsValid)
+            {
+                // pobieramy id uzytkownika aktualnie zalogowanego
+                var userId = User.Identity.GetUserId();
+
+                // utworzenie obiektu zamowienia na podstawie tego co mamy w koszyku
+                var newOrder = koszykMenager.UtworzZamowienie(zamowienieSzczegoly, userId);
+
+                // szczegóły użytkownika - aktualizacja danych 
+                var user = await UserManager.FindByIdAsync(userId);
+                TryUpdateModel(user.DaneUzytkownika);
+                await UserManager.UpdateAsync(user);
+
+                // opróżnimy nasz koszyk zakupów
+                koszykMenager.PustyKoszyk();
+
+                //maileService.WyslaniePotwierdzenieZamowieniaEmail(newOrder);
+
+                return RedirectToAction("PotwierdzenieZamowienia");
+            }
+            else
+                return View(zamowienieSzczegoly);
+        }
+        public ActionResult PotwierdzenieZamowienia()
+        {
+            return View();
+        }
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
         }
     }
 }
